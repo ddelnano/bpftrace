@@ -264,6 +264,11 @@ void AsyncHandlers::cat(const OpaqueValue &data)
 
 void AsyncHandlers::printf(const OpaqueValue &data)
 {
+  if (bpftrace.printf_callback_) {
+    bpftrace.printf_callback_(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(data.data())));
+    return;
+  }
+
   auto id = data.bitcast<uint64_t>() -
             static_cast<uint64_t>(AsyncAction::printf);
   auto &fmt = std::get<0>(bpftrace.resources.printf_args[id]);
