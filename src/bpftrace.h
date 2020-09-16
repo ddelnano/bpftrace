@@ -178,6 +178,8 @@ public:
   }
   void fentry_recursion_check(ast::Program *prog);
 
+  std::function<void(uint8_t*)> printf_callback_;
+
   std::string cmd_;
   bool finalize_ = false;
   static int exit_code;

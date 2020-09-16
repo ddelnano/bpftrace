@@ -464,6 +464,11 @@ void perf_event_printer(void *cb_cookie, void *data, int size)
   }
 
   // printf
+  if (bpftrace->printf_callback_) {
+    bpftrace->printf_callback_(arg_data);
+    return;
+  }
+
   auto &fmt = std::get<0>(bpftrace->resources.printf_args[printf_id]);
   auto &args = std::get<1>(bpftrace->resources.printf_args[printf_id]);
   auto arg_values = bpftrace->get_arg_values(args, arg_data);
