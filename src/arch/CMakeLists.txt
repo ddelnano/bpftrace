@@ -17,3 +17,6 @@ elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "loongarch64")
 else()
   message(FATAL_ERROR "Unsupported architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
+
+install(TARGETS arch
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
