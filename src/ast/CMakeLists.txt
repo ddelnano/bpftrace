@@ -1,4 +1,5 @@
 add_library(ast_defs STATIC ast.cpp)
+set_target_properties(ast_defs PROPERTIES PUBLIC_HEADER "ast.h")
 add_dependencies(ast_defs parser)
 
 add_library(ast STATIC
@@ -22,6 +23,12 @@ add_library(ast STATIC
   passes/codegen_llvm.cpp
   passes/return_path_analyser.cpp
 )
+set_target_properties(ast PROPERTIES PUBLIC_HEADER "attachpoint_parser.h;async_event_types.h;pass_manager.h;irbuilderbpf.h;visitors.h;vtable.h")
+
+install(TARGETS ast_defs ast
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ast)
+install(FILES passes/callback_visitor.h passes/codegen_llvm.h passes/field_analyser.h passes/node_counter.h passes/portability_analyser.h passes/printer.h passes/resource_analyser.h passes/semantic_analyser.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ast/passes)
 
 target_compile_definitions(ast PRIVATE ${BPFTRACE_FLAGS})
 target_link_libraries(ast PUBLIC ast_defs arch parser)

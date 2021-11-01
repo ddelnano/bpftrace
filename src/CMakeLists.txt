@@ -48,6 +48,7 @@ add_library(runtime STATIC
 )
 # Ensure flex+bison outputs are built first
 add_dependencies(runtime parser)
+set_target_properties(runtime PROPERTIES PUBLIC_HEADER "attached_probe.h;utils.h;mapkey.h;types.h;usdt.h;bpffeature.h;btf.h;child.h;dwarf_parser.h;imap.h;log.h;map.h;output.h;printf.h;mapmanager.h;struct.h;printf_format_types.h;probe_matcher.h;procmon.h;fake_map.h;disasm.h;required_resources.h;resolve_cgroupid.h;relocator.h")
 
 add_library(libbpftrace STATIC
   build_info.cpp
@@ -58,6 +59,7 @@ add_library(libbpftrace STATIC
 )
 # So it's not "liblibbpftrace"
 set_target_properties(libbpftrace PROPERTIES PREFIX "")
+set_target_properties(libbpftrace PROPERTIES PUBLIC_HEADER "bpftrace.h;driver.h;tracepoint_format_parser.h;libbpf/bpf.h;build_info.h;clang_parser.h;lockdown.h")
 
 add_executable(${BPFTRACE}
   ${MAIN_SRC}
@@ -86,6 +88,11 @@ if (BUILD_FUZZ)
       message(STATUS "Use libfuzzer")
   endif()
 endif()
+
+install(TARGETS libbpftrace runtime
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+target_compile_definitions(${BPFTRACE} PRIVATE ${BPFTRACE_FLAGS})
 
 # compile definitions
 
@@ -167,7 +174,7 @@ endif(HAVE_BFD_DISASM)
 if(LIBBCC_BPF_CONTAINS_RUNTIME)
   target_link_libraries(runtime ${LIBBCC_BPF_LIBRARIES})
 else()
-  target_link_libraries(runtime ${LIBBCC_LIBRARIES})
+  target_link_libraries(runtime ${LIBBCC_LIBRARIES} ${LIBBCC_BPF_LIBRARIES})
 endif()
 
 if(STATIC_LINKING)
