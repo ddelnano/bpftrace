@@ -8,3 +8,6 @@ add_library(arch STATIC
   riscv64.cpp
   loongarch64.cpp
 )
+
+install(TARGETS arch
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})

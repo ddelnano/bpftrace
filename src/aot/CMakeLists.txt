@@ -1,7 +1,12 @@
 add_library(aot STATIC aot.cpp)
+set_target_properties(aot PROPERTIES PUBLIC_HEADER "aot.h")
 add_dependencies(aot version_h)
 target_link_libraries(aot required_resources parser)
 target_compile_definitions(aot PRIVATE ${BPFTRACE_FLAGS})
+
+install(TARGETS aot
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/aot)
 
 if(STATIC_LINKING)
   target_link_libraries(aot LIBELF)
