@@ -86,6 +86,8 @@ private:
   std::string msg_;
 };
 
+using BPFTraceMap = std::vector<std::pair<std::vector<uint8_t>, std::vector<uint8_t>>>;
+
 class BPFtrace {
 public:
   BPFtrace(std::unique_ptr<Output> o = std::make_unique<TextOutput>(std::cout),
@@ -116,6 +118,7 @@ public:
   int clear_map(const BpfMap &map);
   int zero_map(const BpfMap &map);
   int print_map(const BpfMap &map, uint32_t top, uint32_t div);
+  BPFTraceMap get_map(const std::string& name);
   std::string get_stack(int64_t stackid,
                         uint32_t nr_stack_frames,
                         int32_t pid,
@@ -273,6 +276,7 @@ private:
   int poll_perf_events();
   void handle_event_loss();
   int print_map_hist(const BpfMap &map, uint32_t top, uint32_t div);
+  BPFTraceMap get_map(const BpfMap &map);
   static uint64_t read_address_from_output(std::string output);
   struct bcc_symbol_option &get_symbol_opts();
   Probe generate_probe(const ast::AttachPoint &ap,
