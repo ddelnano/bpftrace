@@ -178,6 +178,8 @@ public:
   }
   void fentry_recursion_check(ast::Program *prog);
 
+  void poll_output(output::Output &out, bool drain = false);
+
   std::function<void(uint8_t*)> printf_callback_;
 
   std::string cmd_;
