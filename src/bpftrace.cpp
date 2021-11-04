@@ -1233,6 +1233,39 @@ void BPFtrace::poll_output(bool drain)
   return;
 }
 
+BPFTraceMap BPFtrace::get_map(const std::string& name) {
+  auto map = bytecode_.getMap(name);
+  return get_map(map);
+}
+
+BPFTraceMap BPFtrace::get_map(const BpfMap &map) {
+  BPFTraceMap values_by_key;
+
+  uint32_t nvalues = map.is_per_cpu_type() ? ncpus_ : 1;
+
+  uint8_t *old_key = nullptr;
+  auto key = std::vector<uint8_t>(map.key_size());
+
+  while (bpf_get_next_key(map.fd(), old_key, key.data()) == 0) {
+    auto value = std::vector<uint8_t>(map.value_size() * nvalues);
+    int err = bpf_lookup_elem(map.fd(), key.data(), value.data());
+    if (err == -ENOENT) {
+      // key was removed by the eBPF program during bpf_get_next_key() and
+      // bpf_lookup_elem(), let's skip this key
+      continue;
+    } else if (err) {
+      LOG(ERROR) << "failed to look up elem: " << err;
+      return values_by_key;
+    }
+
+    values_by_key.push_back({key, value});
+
+    old_key = key.data();
+  }
+
+  return values_by_key;
+}
+
 int BPFtrace::poll_perf_events()
 {
   auto events = std::vector<struct epoll_event>(online_cpus_);
