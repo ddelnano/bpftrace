@@ -839,6 +839,32 @@ void BPFtrace::poll_output(output::Output &out, bool drain)
   }
 }
 
+BPFTraceMap BPFtrace::get_map(const std::string& name) {
+  auto map = bytecode_.getMap(name);
+  return get_map(map);
+}
+
+BPFTraceMap BPFtrace::get_map(const BpfMap &map) {
+  BPFTraceMap values_by_key;
+
+  uint32_t nvalues = map.is_per_cpu_type() ? ncpus_ : 1;
+  auto result = map.collect_elements(nvalues);
+  if (!result) {
+    LOG(ERROR) << "failed to collect elements for map '" << map.name()
+               << "': " << result.takeError();
+    return values_by_key;
+  }
+
+  // Convert MapElements to BPFTraceMap
+  for (const auto& elem : *result) {
+    std::vector<uint8_t> key(elem.first.data(), elem.first.data() + elem.first.size());
+    std::vector<uint8_t> value(elem.second.data(), elem.second.data() + elem.second.size());
+    values_by_key.push_back({key, value});
+  }
+
+  return values_by_key;
+}
+
 int BPFtrace::poll_skboutput_events()
 {
   auto events = std::vector<struct epoll_event>(online_cpus_);
