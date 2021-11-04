@@ -182,6 +182,8 @@ public:
   Dwarf *get_dwarf(const ast::AttachPoint &attachpoint);
   std::set<std::string> list_modules(const ast::ASTContext &ctx);
 
+  void poll_output(output::Output &out, bool drain = false);
+
   std::function<void(uint8_t*)> printf_callback_;
 
   std::string cmd_;
@@ -262,7 +264,6 @@ private:
                                               bool perf_mode,
                                               bool show_debug_info);
   void teardown_output();
-  void poll_output(output::Output &out, bool drain = false);
   int poll_skboutput_events();
   void poll_event_loss(output::Output &out);
   static uint64_t read_address_from_output(std::string output);
