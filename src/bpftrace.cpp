@@ -927,7 +927,7 @@ int BPFtrace::prerun() const
   return 0;
 }
 
-int BPFtrace::run(BpfBytecode bytecode)
+int BPFtrace::deploy(BpfBytecode bytecode)
 {
   int err = prerun();
   if (err)
@@ -1050,6 +1050,15 @@ int BPFtrace::run(BpfBytecode bytecode)
   if (std::getenv("__BPFTRACE_NOTIFY_PROBES_ATTACHED"))
     std::cerr << "__BPFTRACE_NOTIFY_PROBES_ATTACHED" << std::endl;
 
+  return 0;
+}
+
+int BPFtrace::run(BpfBytecode bytecode)
+{
+  int err = deploy(std::move(bytecode));
+  if (err)
+    return err;
+
 #ifdef HAVE_LIBSYSTEMD
   err = sd_notify(false, "READY=1\nSTATUS=Processing events...");
   if (err < 0)
@@ -1058,7 +1067,7 @@ int BPFtrace::run(BpfBytecode bytecode)
 #endif
 
   if (has_iter_) {
-    int err = run_iter();
+    err = run_iter();
     if (err)
       return err;
   } else {
@@ -1072,6 +1081,11 @@ int BPFtrace::run(BpfBytecode bytecode)
                  << strerror(-err);
 #endif
 
+  return finalize();
+}
+
+int BPFtrace::finalize()
+{
   attached_probes_.clear();
   // finalize_ and exitsig_recv should be false from now on otherwise
   // perf_event_printer() can ignore the `END` events.
