@@ -423,9 +423,9 @@ int BPFtrace::prerun() const
   return 0;
 }
 
-int BPFtrace::run(output::Output &out,
-                  const ast::CDefinitions &c_definitions,
-                  BpfBytecode bytecode)
+int BPFtrace::deploy(output::Output &out,
+                     const ast::CDefinitions &c_definitions,
+                     BpfBytecode bytecode)
 {
   int err = prerun();
   if (err)
@@ -640,6 +640,17 @@ int BPFtrace::run(output::Output &out,
   if (std::getenv("__BPFTRACE_NOTIFY_PROBES_ATTACHED"))
     std::cout << "__BPFTRACE_NOTIFY_PROBES_ATTACHED" << std::endl;
 
+  return 0;
+}
+
+int BPFtrace::run(output::Output &out,
+                  const ast::CDefinitions &c_definitions,
+                  BpfBytecode bytecode)
+{
+  int err = deploy(out, c_definitions, std::move(bytecode));
+  if (err)
+    return err;
+
 #ifdef HAVE_LIBSYSTEMD
   err = sd_notify(false, "READY=1\nSTATUS=Processing events...");
   if (err < 0)
@@ -648,13 +659,11 @@ int BPFtrace::run(output::Output &out,
 #endif
 
   if (has_iter_) {
-    int err = run_iter();
+    err = run_iter();
     if (err)
       return err;
   } else {
-    bool should_drain = (num_begin_end_attached > 0 || run_benchmarks_) &&
-                        num_signal_attached == 0 && num_attached == 0;
-    poll_output(out, should_drain);
+    poll_output(out, false);
   }
 
 #ifdef HAVE_LIBSYSTEMD
@@ -664,6 +673,11 @@ int BPFtrace::run(output::Output &out,
                  << strerror(-err);
 #endif
 
+  return finalize(out);
+}
+
+int BPFtrace::finalize(output::Output &out)
+{
   attached_probes_.clear();
   // finalize_ and exitsig_recv should be false from now on otherwise
   // perf_event_printer() can ignore the `end` events.

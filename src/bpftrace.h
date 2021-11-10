@@ -128,6 +128,10 @@ public:
   int run(output::Output &out,
           const ast::CDefinitions &c_definitions,
           BpfBytecode bytecode);
+  int deploy(output::Output &out,
+             const ast::CDefinitions &c_definitions,
+             BpfBytecode bytecode);
+  int finalize(output::Output &out);
   virtual Result<std::unique_ptr<AttachedProbe>> attach_probe(
       Probe &probe,
       const BpfBytecode &bytecode);
