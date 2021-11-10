@@ -117,6 +117,8 @@ public:
   int num_probes() const;
   int prerun() const;
   int run(BpfBytecode bytecode);
+  int deploy(BpfBytecode bytecode);
+  int finalize();
   std::vector<std::unique_ptr<AttachedProbe>> attach_probe(
       Probe &probe,
       const BpfBytecode &bytecode);
