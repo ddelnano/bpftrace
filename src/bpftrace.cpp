@@ -1176,7 +1176,7 @@ void BPFtrace::teardown_output()
     open_perf_buffers_.clear();
 }
 
-void BPFtrace::poll_output(bool drain)
+void BPFtrace::poll_output(bool drain, int timeout_ms)
 {
   int ready;
   bool do_poll_perf_event = is_perf_event_enabled();
