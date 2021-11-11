@@ -181,7 +181,7 @@ public:
   }
   void fentry_recursion_check(ast::Program *prog);
 
-  void poll_output(output::Output &out, bool drain = false);
+  void poll_output(bool drain = false, int timeout_ms = 100);
 
   std::function<void(uint8_t*)> printf_callback_;
 
@@ -277,7 +277,6 @@ private:
     return !feature_->has_map_ringbuf() || resources.needs_perf_event_map;
   }
   void teardown_output();
-  void poll_output(bool drain = false);
   int poll_perf_events();
   void handle_event_loss();
   int print_map_hist(const BpfMap &map, uint32_t top, uint32_t div);
