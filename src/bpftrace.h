@@ -185,7 +185,7 @@ public:
   Dwarf *get_dwarf(const ast::AttachPoint &attachpoint);
   std::set<std::string> list_modules(const ast::ASTContext &ctx);
 
-  void poll_output(output::Output &out, bool drain = false);
+  void poll_output(output::Output &out, bool drain = false, int timeout_ms = 100);
 
   std::function<void(uint8_t*)> printf_callback_;
 

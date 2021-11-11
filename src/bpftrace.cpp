@@ -763,7 +763,7 @@ void BPFtrace::teardown_output()
     open_perf_buffers_.clear();
 }
 
-void BPFtrace::poll_output(output::Output &out, bool drain)
+void BPFtrace::poll_output(output::Output &out, bool drain, int timeout_ms)
 {
   int ready;
   bool poll_skboutput = resources.using_skboutput;
