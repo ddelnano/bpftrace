@@ -10,7 +10,6 @@
 #ifdef HAVE_LIBDW
 #include <elfutils/libdwfl.h>
 #include <optional>
-#include <unordered_map>
 
 namespace bpftrace {
 
@@ -63,8 +62,6 @@ private:
 } // namespace bpftrace
 
 #else // HAVE_LIBDW
-
-#include "log.h"
 
 namespace bpftrace {
 

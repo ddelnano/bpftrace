@@ -1,10 +1,10 @@
 #include "dwarf_parser.h"
 
+#include "log.h"
+
 #ifdef HAVE_LIBDW
 
 #include "bpftrace.h"
-#include "log.h"
-
 #include <dwarf.h>
 #include <elfutils/libdw.h>
 
@@ -413,6 +413,22 @@ ssize_t Dwarf::get_bitfield_size(Dwarf_Die &field_die)
       return static_cast<ssize_t>(value);
   }
   return 0;
+}
+
+} // namespace bpftrace
+
+#else // HAVE_LIBDW
+
+namespace bpftrace {
+
+std::unique_ptr<Dwarf> Dwarf::GetFromBinary(const std::string &file_path_
+                                              __attribute__((unused)))
+{
+  static bool warned = false;
+  if (!warned)
+    LOG(WARNING) << "Cannot parse DWARF: libdw not available";
+  warned = true;
+  return nullptr;
 }
 
 } // namespace bpftrace
