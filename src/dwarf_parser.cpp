@@ -1,9 +1,10 @@
 #include "dwarf_parser.h"
 
+#include "log.h"
+
 #ifdef HAVE_LIBLLDB
 
 #include "bpftrace.h"
-#include "log.h"
 #include "types.h"
 
 #include <atomic>

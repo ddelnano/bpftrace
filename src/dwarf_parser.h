@@ -63,8 +63,6 @@ private:
 
 #else // HAVE_LIBLLDB
 
-#include "log.h"
-
 namespace bpftrace {
 class BPFtrace;
 
