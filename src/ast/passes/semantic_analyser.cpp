@@ -4041,6 +4041,7 @@ bool SemanticAnalyser::update_string_size(SizedType &type,
 SizedType SemanticAnalyser::create_merged_tuple(const SizedType &left,
                                                 const SizedType &right)
 {
+<<<<<<< HEAD
   assert(left.IsTupleTy() && right.IsTupleTy() &&
          (left.GetFieldCount() == right.GetFieldCount()));
 
