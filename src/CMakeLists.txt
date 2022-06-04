@@ -53,23 +53,26 @@ add_library(libbpftrace STATIC
 set_target_properties(libbpftrace PROPERTIES PREFIX "")
 set_target_properties(libbpftrace PROPERTIES PUBLIC_HEADER "bpftrace.h;driver.h;tracepoint_format_parser.h;libbpf/bpf.h;build_info.h;clang_parser.h;lockdown.h")
 
-add_executable(bpftrace
-  main.cpp
-  benchmark.cpp
-)
-
 # TODO: Honor `STATIC_LINKING` properly.
 if(LIBBLAZESYM_FOUND)
   target_include_directories(runtime PRIVATE ${LIBBLAZESYM_INCLUDE_DIRS})
   target_link_libraries(runtime ${LIBBLAZESYM_LIBRARIES})
 endif()
 
-install(TARGETS bpftrace DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(TARGETS libbpftrace runtime
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-target_compile_definitions(bpftrace PRIVATE ${BPFTRACE_FLAGS})
-target_link_libraries(bpftrace libbpftrace)
+
+if(ENABLE_BPFTRACE_EXE)
+  add_executable(bpftrace
+    main.cpp
+    benchmark.cpp
+  )
+
+  install(TARGETS bpftrace DESTINATION ${CMAKE_INSTALL_BINDIR})
+  target_compile_definitions(bpftrace PRIVATE ${BPFTRACE_FLAGS})
+  target_link_libraries(bpftrace libbpftrace)
+endif(ENABLE_BPFTRACE_EXE)
 
 # compile definitions
 
@@ -84,7 +87,9 @@ add_custom_target(version_h
     -Dbpftrace_SOURCE_DIR=${CMAKE_SOURCE_DIR}
     -P ${CMAKE_SOURCE_DIR}/cmake/Version.cmake
 )
-add_dependencies(bpftrace version_h)
+if(ENABLE_BPFTRACE_EXE)
+  add_dependencies(bpftrace version_h)
+endif()
 add_dependencies(libbpftrace version_h)
 
 target_compile_definitions(required_resources PRIVATE ${BPFTRACE_FLAGS})
@@ -93,9 +98,11 @@ target_include_directories(libbpftrace PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_compile_definitions(libbpftrace PRIVATE ${BPFTRACE_FLAGS})
 
 # Linking
-if(STATIC_LINKING)
-  target_link_options(bpftrace BEFORE PRIVATE "-static-libgcc" "-static-libstdc++")
-endif(STATIC_LINKING)
+if(ENABLE_BPFTRACE_EXE)
+  if(STATIC_LINKING)
+    target_link_options(bpftrace BEFORE PRIVATE "-static-libgcc" "-static-libstdc++")
+  endif(STATIC_LINKING)
+endif(ENABLE_BPFTRACE_EXE)
 
 
 target_link_libraries(runtime debugfs output tracefs util)
@@ -195,10 +202,12 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR ${CMAKE_CXX_COMPILER_VERSION}
   target_link_libraries(libbpftrace "stdc++fs")
 endif()
 
-if (BUILD_ASAN)
-  target_compile_options(bpftrace PUBLIC "-fsanitize=address")
-  target_link_options(bpftrace PUBLIC "-fsanitize=address")
-endif()
+if(ENABLE_BPFTRACE_EXE)
+  if (BUILD_ASAN)
+    target_compile_options(bpftrace PUBLIC "-fsanitize=address")
+    target_link_options(bpftrace PUBLIC "-fsanitize=address")
+  endif()
+endif(ENABLE_BPFTRACE_EXE)
 
 if (STATIC_LINKING)
   if(ANDROID)

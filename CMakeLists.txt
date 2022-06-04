@@ -10,6 +10,8 @@ set(bpftrace_VERSION_PATCH 1)
 
 include(GNUInstallDirs)
 
+option(ENABLE_BPFTRACE_EXE "Enable bpftrace executable" ON)
+
 set(WARNINGS_AS_ERRORS OFF CACHE BOOL "Build with -Werror")
 set(HARDENED_STDLIB OFF CACHE BOOL "Enable hardened definitions for standard library (for development use only)")
 set(STATIC_LINKING OFF CACHE BOOL "Build bpftrace as a statically linked executable")
