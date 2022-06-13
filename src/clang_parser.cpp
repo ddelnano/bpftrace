@@ -587,12 +587,15 @@ bool ClangParser::parse(ast::Program *program,
       .Length = input.size(),
   });
 
-  args = { "-isystem", "/bpftrace/include" };
-  auto system_paths = system_include_paths();
-  for (auto &path : system_paths) {
-    args.push_back("-isystem");
-    args.push_back(path.c_str());
-  }
+  // clang-format off
+  // Use fixed paths instead of system_include_paths() to avoid segfault
+  // when an exception is thrown during dynamic include path discovery.
+  args = {
+    "-isystem", "/usr/local/include",
+    "-isystem", "/bpftrace/include",
+    "-isystem", "/usr/include",
+  };
+  // clang-format on
   std::string arch_path = get_arch_include_path();
   args.push_back("-isystem");
   args.push_back(arch_path.c_str());
