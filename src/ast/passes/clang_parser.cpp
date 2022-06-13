@@ -652,9 +652,11 @@ bool ClangParser::parse(ast::Program *program,
       .Length = input.size(),
   });
 
+  // args originally were dynamically determined with system_include_paths(),
+  // which uses clang. This, however, causes an exception when clang is not
+  // found inside the container. We have reverted it to use hard-coded include
+  // paths.
   // clang-format off
-  // Use fixed paths instead of system_include_paths() to avoid segfault
-  // when an exception is thrown during dynamic include path discovery.
   args = {
     "-isystem", "/usr/local/include",
     "-isystem", "/bpftrace/include",
