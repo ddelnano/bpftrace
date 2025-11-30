@@ -1012,7 +1012,8 @@ int BPFtrace::deploy(BpfBytecode bytecode)
     }
   }
 
-  for (auto &probe : std::ranges::reverse_view(resources.probes)) {
+  for (auto it = resources.probes.rbegin(); it != resources.probes.rend(); ++it) {
+    auto &probe = *it;
     if (BPFtrace::exitsig_recv) {
       request_finalize();
       return -1;
