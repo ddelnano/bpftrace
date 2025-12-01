@@ -695,9 +695,6 @@ std::string opstr(const Jump &jump);
 
 SizedType ident_to_record(const std::string &ident, int pointer_level = 0);
 
-template <typename T>
-concept NodeType = std::derived_from<T, Node>;
-
 /*
  * Manages the lifetime of AST nodes.
  *
@@ -711,9 +708,11 @@ public:
   /*
    * Creates and returns a pointer to an AST node.
    */
-  template <NodeType T, typename... Args>
+  template <typename T, typename... Args>
   T *make_node(Args &&...args)
   {
+    static_assert(std::is_base_of<Node, T>::value,
+                  "T must be derived from Node");
     auto uniq_ptr = std::make_unique<T>(std::forward<Args>(args)...);
     auto *raw_ptr = uniq_ptr.get();
     nodes_.push_back(std::move(uniq_ptr));

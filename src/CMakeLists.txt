@@ -48,7 +48,7 @@ add_library(runtime STATIC
 )
 # Ensure flex+bison outputs are built first
 add_dependencies(runtime parser)
-set_target_properties(runtime PROPERTIES PUBLIC_HEADER "attached_probe.h;utils.h;types.h;usdt.h;bpffeature.h;btf.h;child.h;dwarf_parser.h;filesystem.h;log.h;output.h;printf.h;struct.h;printf_format_types.h;probe_matcher.h;procmon.h;disasm.h;required_resources.h;resolve_cgroupid.h;format_string.h")
+set_target_properties(runtime PROPERTIES PUBLIC_HEADER "attached_probe.h;utils.h;types.h;usdt.h;bpffeature.h;btf.h;child.h;dwarf_parser.h;filesystem.h;log.h;output.h;printf.h;struct.h;printf_format_types.h;kfuncs.h;probe_matcher.h;procmon.h;disasm.h;required_resources.h;resolve_cgroupid.h;format_string.h")
 
 add_library(libbpftrace STATIC
   build_info.cpp
