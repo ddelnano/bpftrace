@@ -4097,7 +4097,7 @@ BpfBytecode CodegenLLVM::emit(bool dis)
     disassemble(output);
 
   state_ = State::DONE;
-  return BpfBytecode{ output };
+  return BpfBytecode{ output.data(), output.size() };
 }
 
 BpfBytecode CodegenLLVM::compile()

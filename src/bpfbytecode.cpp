@@ -12,12 +12,13 @@
 
 namespace bpftrace {
 
-BpfBytecode::BpfBytecode(std::span<uint8_t> elf)
-    : BpfBytecode(std::as_bytes(elf))
+BpfBytecode::BpfBytecode(const uint8_t *elf_data, size_t elf_size)
+    : BpfBytecode(static_cast<const void *>(elf_data), elf_size)
 {
 }
 
-BpfBytecode::BpfBytecode(std::span<char> elf) : BpfBytecode(std::as_bytes(elf))
+BpfBytecode::BpfBytecode(const char *elf_data, size_t elf_size)
+    : BpfBytecode(static_cast<const void *>(elf_data), elf_size)
 {
 }
 
@@ -33,7 +34,7 @@ static std::optional<std::string> get_global_var_section_name(
   return std::nullopt;
 }
 
-BpfBytecode::BpfBytecode(std::span<const std::byte> elf)
+BpfBytecode::BpfBytecode(const void *elf_data, size_t elf_size)
 {
   int log_level = 0;
   // In debug mode, show full verifier log.
@@ -48,7 +49,7 @@ BpfBytecode::BpfBytecode(std::span<const std::byte> elf)
                        .kernel_log_level = static_cast<__u32>(log_level));
 
   bpf_object_ = std::unique_ptr<struct bpf_object, bpf_object_deleter>(
-      bpf_object__open_mem(elf.data(), elf.size(), &opts));
+      bpf_object__open_mem(elf_data, elf_size, &opts));
   if (!bpf_object_)
     LOG(BUG) << "The produced ELF is not a valid BPF object";
 

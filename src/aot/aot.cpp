@@ -338,8 +338,8 @@ int load(BPFtrace &bpftrace, const std::string &in)
   if (err)
     goto out;
 
-  bpftrace.bytecode_ = BpfBytecode{ std::span<uint8_t>{
-      btaot_section + hdr->elf_off, hdr->elf_len } };
+  bpftrace.bytecode_ = BpfBytecode{ btaot_section + hdr->elf_off,
+                                    hdr->elf_len };
   if (err)
     goto out;
 
