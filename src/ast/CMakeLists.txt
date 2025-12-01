@@ -23,12 +23,12 @@ add_library(ast STATIC
   passes/codegen_llvm.cpp
   passes/return_path_analyser.cpp
 )
-set_target_properties(ast PROPERTIES PUBLIC_HEADER "attachpoint_parser.h;async_event_types.h;async_ids.h;collect_nodes.h;dibuilderbpf.h;pass_manager.h;irbuilderbpf.h;visitors.h;vtable.h")
+set_target_properties(ast PROPERTIES PUBLIC_HEADER "attachpoint_parser.h;async_event_types.h;async_ids.h;dibuilderbpf.h;pass_manager.h;irbuilderbpf.h;visitors.h;vtable.h")
 
 install(TARGETS ast_defs ast
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ast)
-install(FILES passes/callback_visitor.h passes/codegen_llvm.h passes/codegen_resources.h passes/field_analyser.h passes/node_counter.h passes/portability_analyser.h passes/printer.h passes/resource_analyser.h passes/semantic_analyser.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ast/passes)
+install(FILES passes/callback_visitor.h passes/codegen_llvm.h passes/codegen_resources.h passes/collect_nodes.h passes/field_analyser.h passes/node_counter.h passes/portability_analyser.h passes/printer.h passes/resource_analyser.h passes/semantic_analyser.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ast/passes)
 
 target_compile_definitions(ast PRIVATE ${BPFTRACE_FLAGS})
 target_link_libraries(ast PUBLIC ast_defs arch parser)
