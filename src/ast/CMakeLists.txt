@@ -21,6 +21,7 @@ add_library(ast STATIC
   passes/resource_analyser.cpp
   passes/semantic_analyser.cpp
   passes/codegen_llvm.cpp
+  passes/node_counter.cpp
   passes/return_path_analyser.cpp
 )
 set_target_properties(ast PROPERTIES PUBLIC_HEADER "attachpoint_parser.h;async_event_types.h;async_ids.h;dibuilderbpf.h;pass_manager.h;irbuilderbpf.h;visitors.h;vtable.h")
