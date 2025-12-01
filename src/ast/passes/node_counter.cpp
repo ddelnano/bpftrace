@@ -1,3 +1,9 @@
+#include "ast/passes/node_counter.h"
+
+#include "ast/visitors.h"
+#include "bpftrace.h"
+#include "log.h"
+
 Pass CreateCounterPass()
 {
   auto fn = [](Node &n, PassContext &ctx) {
