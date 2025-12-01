@@ -4,6 +4,9 @@
 #include "bpftrace.h"
 #include "log.h"
 
+namespace bpftrace {
+namespace ast {
+
 Pass CreateCounterPass()
 {
   auto fn = [](Node &n, PassContext &ctx) {
@@ -22,3 +25,5 @@ Pass CreateCounterPass()
   return Pass("NodeCounter", fn);
 }
 
+} // namespace ast
+} // namespace bpftrace
