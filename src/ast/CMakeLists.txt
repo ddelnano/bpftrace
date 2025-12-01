@@ -28,7 +28,7 @@ set_target_properties(ast PROPERTIES PUBLIC_HEADER "attachpoint_parser.h;async_e
 install(TARGETS ast_defs ast
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ast)
-install(FILES passes/callback_visitor.h passes/codegen_llvm.h passes/field_analyser.h passes/node_counter.h passes/portability_analyser.h passes/printer.h passes/resource_analyser.h passes/semantic_analyser.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ast/passes)
+install(FILES passes/callback_visitor.h passes/codegen_llvm.h passes/codegen_resources.h passes/field_analyser.h passes/node_counter.h passes/portability_analyser.h passes/printer.h passes/resource_analyser.h passes/semantic_analyser.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ast/passes)
 
 target_compile_definitions(ast PRIVATE ${BPFTRACE_FLAGS})
 target_link_libraries(ast PUBLIC ast_defs arch parser)
