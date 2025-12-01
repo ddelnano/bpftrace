@@ -22,3 +22,5 @@ endfunction()
 
 embed_headers(${CMAKE_CURRENT_BINARY_DIR}/headers.h ${CMAKE_CURRENT_BINARY_DIR}/headers.cpp)
 add_library(resources STATIC ${CMAKE_CURRENT_BINARY_DIR}/headers.cpp)
+install(TARGETS resources
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
