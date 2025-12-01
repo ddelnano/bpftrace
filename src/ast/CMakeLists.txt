@@ -23,7 +23,7 @@ add_library(ast STATIC
   passes/codegen_llvm.cpp
   passes/return_path_analyser.cpp
 )
-set_target_properties(ast PROPERTIES PUBLIC_HEADER "attachpoint_parser.h;async_event_types.h;async_ids.h;pass_manager.h;irbuilderbpf.h;visitors.h;vtable.h")
+set_target_properties(ast PROPERTIES PUBLIC_HEADER "attachpoint_parser.h;async_event_types.h;async_ids.h;dibuilderbpf.h;pass_manager.h;irbuilderbpf.h;visitors.h;vtable.h")
 
 install(TARGETS ast_defs ast
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
